@@ -1,18 +1,30 @@
 {
-	"name": "express-jwt-bcrypt-postgresql",
-	"version": "1.0.0",
-	"description": "This repository contains a backend boilerplate built with Express.js, JSON Web Tokens (JWT) for authentication, bcrypt for password hashing, and PostgreSQL for database management. It provides a solid foundation for building secure and scalable web applications.",
-	"main": "server.js",
-	"scripts": {
-		"start": "node .",
-		"dev": "nodemon server.js"
-	},
-	"keywords": [],
-	"author": "",
-	"license": "ISC",
-	"dependencies": {
-		"cookie-parser": "^1.4.6",
-		"cors": "^2.8.5",
-		"express": "^4.19.2"
-	}
+    "name": "express-jwt-bcrypt-postgresql",
+    "version": "1.0.0",
+    "description": "This repository contains a backend boilerplate built with Express.js, JSON Web Tokens (JWT) for authentication, bcrypt for password hashing, and PostgreSQL for database management. It provides a solid foundation for building secure and scalable web applications.",
+    "main": "server.js",
+    "scripts": {
+        "start": "node .",
+        "dev": "nodemon server.js"
+    },
+    "keywords": [
+        "express",
+        "jwt",
+        "bcrypt",
+        "postgresql",
+        "rest-api",
+        "authentication",
+        "password-hashing"
+    ],
+    "author": "Andrei-Boghiu",
+    "license": "MIT",
+    "dependencies": {
+        "bcrypt": "^5.1.1",
+        "cookie-parser": "^1.4.6",
+        "cors": "^2.8.5",
+        "dotenv": "^16.4.5",
+        "express": "^4.19.2",
+        "jsonwebtoken": "^9.0.2",
+        "pg": "^8.11.5"
+    }
 }
