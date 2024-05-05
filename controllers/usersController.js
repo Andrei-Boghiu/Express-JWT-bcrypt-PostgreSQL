@@ -47,13 +47,15 @@ const loginUser = async (req, res) => {
             return res.status(401).json({ message: 'Invalid credentials' });
         }
 
+        const userDetails = { id: user.id, email: user.email, role: user.role };
+
         // Generate JWT token
-        const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+        const token = jwt.sign(userDetails, process.env.JWT_SECRET, { expiresIn: '1h' });
 
         res.json({
             message: 'Logged in successfully',
             token,
-            user: { id: user.id, email: user.email },
+            user: userDetails,
         });
     } catch (error) {
         console.error('Error logging in:', error);
@@ -95,7 +97,12 @@ const verifyTokenEndpoint = (req, res) => {
         if (err) {
             return res.status(401).json({ message: 'Invalid token' });
         }
-        res.json({ message: 'Token is valid', userId: decoded.id });
+
+        const userDetails = { id: decoded.id, email: decoded.email, role: decoded.role };
+        res.json({
+            message: 'Token is valid',
+            user: userDetails,
+        });
     });
 };
 

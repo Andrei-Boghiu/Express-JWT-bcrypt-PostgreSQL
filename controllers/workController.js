@@ -14,4 +14,15 @@ const inProgress = async (req, res) => {
     }
 };
 
+const insertWork = async (req, res) => {
+    const userId = req.user.id;
+    try {
+        const { rows } = await pool.query('SELECT NOW()', []);
+        res.json(rows);
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Server error');
+    }
+};
+
 module.exports = { inProgress };
