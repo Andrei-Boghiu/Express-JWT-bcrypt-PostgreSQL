@@ -1,9 +1,9 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const pool = require('../config/db'); // Make sure this path is correct
+const pool = require('../config/db');
 
 const registerUser = async (req, res) => {
-    const { username, password } = req.body;
+    const { email, password } = req.body;
     try {
         // Hash password
         const salt = await bcrypt.genSalt(10);
@@ -11,8 +11,8 @@ const registerUser = async (req, res) => {
 
         // Insert user into the database
         const query =
-            'INSERT INTO users (username, hashed_password) VALUES ($1, $2) RETURNING id, username;';
-        const values = [username, hashedPassword];
+            'INSERT INTO users (email, hashed_password) VALUES ($1, $2) RETURNING id, email;';
+        const values = [email, hashedPassword];
         const { rows } = await pool.query(query, values);
 
         // Return the new user
@@ -29,11 +29,11 @@ const registerUser = async (req, res) => {
 };
 
 const loginUser = async (req, res) => {
-    const { username, password } = req.body;
+    const { email, password } = req.body;
     try {
         // Check if user exists
-        const query = 'SELECT * FROM users WHERE username = $1;';
-        const values = [username];
+        const query = 'SELECT * FROM users WHERE email = $1;';
+        const values = [email];
         const { rows } = await pool.query(query, values);
         const user = rows[0];
 
@@ -53,7 +53,7 @@ const loginUser = async (req, res) => {
         res.json({
             message: 'Logged in successfully',
             token,
-            user: { id: user.id, username: user.username },
+            user: { id: user.id, email: user.email },
         });
     } catch (error) {
         console.error('Error logging in:', error);
@@ -65,8 +65,8 @@ const loginUser = async (req, res) => {
 
 const getUserProfile = async (req, res) => {
     try {
-        const userId = req.user.id; // Assuming userID is stored in req.user by the auth middleware
-        const query = 'SELECT id, username FROM users WHERE id = $1;';
+        const userId = req.user.id;
+        const query = 'SELECT id, email FROM users WHERE id = $1;';
         const values = [userId];
         const { rows } = await pool.query(query, values);
         const user = rows[0];
@@ -84,8 +84,24 @@ const getUserProfile = async (req, res) => {
     }
 };
 
+const verifyTokenEndpoint = (req, res) => {
+    const token = req.headers.authorization?.split(' ')[1];
+
+    if (!token) {
+        return res.status(401).json({ message: 'No token provided' });
+    }
+
+    jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+        if (err) {
+            return res.status(401).json({ message: 'Invalid token' });
+        }
+        res.json({ message: 'Token is valid', userId: decoded.id });
+    });
+};
+
 module.exports = {
     registerUser,
     loginUser,
+    verifyTokenEndpoint,
     getUserProfile,
 };
