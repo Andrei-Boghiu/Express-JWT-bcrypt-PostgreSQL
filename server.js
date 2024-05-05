@@ -1,21 +1,15 @@
 const express = require('express');
-const app = express();
-
+const bodyParser = require('body-parser');
 const cors = require('cors');
+const userRoutes = require('./routes/users');
 const corsOptions = require('./config/corsOptions');
-const cookieParser = require('cookie-parser');
-const verifyJWT = require('./middleware/verifyJWT');
-const credentials = require('./middleware/credentials');
-
-app.use(credentials);
+const app = express();
+const PORT = process.env.PORT || 3000;
 
 app.use(cors(corsOptions));
+app.use(bodyParser.json());
+app.use('/api/users', userRoutes);
 
-app.use(express.urlencoded({ extended: false }));
-
-app.use(cookieParser());
-
-app.use(verifyJWT); // Above will be unprotected routes, below protected routes
-
-const PORT = process.env.PORT || 3500;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+});

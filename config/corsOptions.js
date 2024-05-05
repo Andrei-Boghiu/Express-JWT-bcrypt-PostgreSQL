@@ -1,8 +1,13 @@
-const originsWhitelist = require('./originsWhitelist');
+const whitelist = [
+    'https://www.replace-with-yoursite.com',
+    'http://127.0.0.1:5500', // There's no place like 127.0.0.1
+    'http://localhost:3500', // Dave Gray's favorite
+    'http://localhost:3001', // OG
+];
 
 const corsOptions = {
-    origin: (origin, callback) => {
-        if (originsWhitelist.indexOf(origin) !== -1 || !origin) {
+    origin: function (origin, callback) {
+        if (!origin || whitelist.indexOf(origin) !== -1) {
             callback(null, true);
         } else {
             callback(new Error('Not allowed by CORS'));
