@@ -2,14 +2,16 @@ const express = require('express');
 const verifyToken = require('../middlewares/auth');
 const authorize = require('../middlewares/authorize');
 
-const { inProgress } = require('../controllers/workController');
+const { inProgress, insertWork } = require('../controllers/workController');
 
 const router = express.Router();
 
 // PROTECTED ROUTES
 router.get('/in-progress', verifyToken, inProgress);
 
-// Only 'admin' can access this route
+// Only 'admin' can access this routes:
+router.post('/bulk-upload', verifyToken, authorize('admin'), insertWork);
+
 router.get('/admin/data', verifyToken, authorize('admin'), (req, res) => {
     res.json({ adminData: 'Some sensitive data' });
 });

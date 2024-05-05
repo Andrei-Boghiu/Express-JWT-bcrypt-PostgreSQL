@@ -15,14 +15,31 @@ const inProgress = async (req, res) => {
 };
 
 const insertWork = async (req, res) => {
-    const userId = req.user.id;
+    const workItems = req.body;
+    const client = await pool.connect();
+
     try {
-        const { rows } = await pool.query('SELECT NOW()', []);
-        res.json(rows);
-    } catch (err) {
-        console.error(err);
-        res.status(500).send('Server error');
+        await client.query('BEGIN');
+        const query = `INSERT INTO work_items (title, description, status, priority) VALUES ($1, $2, $3, $4)`;
+
+        for (const item of workItems) {
+            await client.query(query, [
+                item.title,
+                item.description,
+                item?.status || 'pending',
+                item?.priority || 3,
+            ]);
+        }
+
+        await client.query('COMMIT');
+        client.release();
+        res.status(201).json({ message: 'Work items successfully uploaded.' });
+    } catch (error) {
+        console.log(error);
+        await client.query('ROLLBACK');
+        client.release();
+        res.status(500).json({ message: 'Failed to upload work items.', error });
     }
 };
 
-module.exports = { inProgress };
+module.exports = { inProgress, insertWork };
