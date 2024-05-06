@@ -7,15 +7,17 @@ const {
     adminAddItems,
     assignNewItem,
     unassignWorkItem,
+    completeWorkItem,
 } = require('../controllers/workController');
 
 const router = express.Router();
 
-// PROTECTED GET ROUTES
+// GET
+// PROTECTED ROUTES
 router.get('/get-user-items', verifyToken, getUserItems);
-router.put('/assign-new-item', verifyToken, assignNewItem); //
+router.get('/assign-new-item', verifyToken, assignNewItem);
 
-// ADMIN PROTECTED GET ROUTES
+// ADMIN PROTECTED ROUTES
 router.get('/admin/data', verifyToken, authorize('admin'), (req, res) => {
     res.json({ adminData: 'Some sensitive data' });
 });
@@ -23,15 +25,15 @@ router.get('/dashboard/stats', verifyToken, authorize(['admin', 'manager']), (re
     res.json({ stats: 'Some stats' });
 });
 
-// ADMIN PROTECTED POST ROUTES
+// POST
+// ADMIN PROTECTED ROUTES
 router.post('/admin/add-items', verifyToken, authorize('admin'), adminAddItems);
 
+// PATCH
+// ADMIN PROTECTED ROUTES
 router.patch('/set-unassigned', verifyToken, authorize(['admin', 'manager']), unassignWorkItem);
 
-// Both 'admin' and 'manager' roles can access this route
-
-// Only 'admin' can access this routes:
-
-router.patch('/set-completed', verifyToken, unassignWorkItem);
+// PROTECTED ROUTES
+router.patch('/set-completed', verifyToken, completeWorkItem);
 
 module.exports = router;
