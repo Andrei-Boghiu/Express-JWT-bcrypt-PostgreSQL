@@ -99,7 +99,7 @@ const verifyTokenEndpoint = (req, res) => {
             return res.status(401).json({ message: 'Invalid token' });
         }
 
-        const userDetails = { id: decoded.id, email: decoded.email, role: decoded.role };
+        const userDetails = { id: decoded.id, email: decoded.email, role: decoded.role, isAdmin: decoded.isAdmin, firstName: decoded.firstName };
         res.json({
             message: 'Token is valid',
             user: userDetails,
