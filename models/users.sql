@@ -1,6 +1,16 @@
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
     email VARCHAR(255) UNIQUE NOT NULL,
+    first_name VARCHAR(255) NOT NULL,
+    last_name VARCHAR(255) NOT NULL,
     hashed_password VARCHAR(255) NOT NULL,
-    role VARCHAR(50) DEFAULT 'user'
+    role VARCHAR(50) DEFAULT 'user',
+    isAdmin BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    active BOOLEAN DEFAULT TRUE,
+    last_login TIMESTAMP,
+    team_id INT -- SET INITIALLY TO INT AND ADD CONSTRAINT LATER 
 );
+
+-- CONSTRAINT TO BE ADDED LATER
+ALTER TABLE users ADD CONSTRAINT team_id_fk FOREIGN KEY (team_id) REFERENCES teams(team_id) NULL;

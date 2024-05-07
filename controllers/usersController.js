@@ -3,16 +3,17 @@ const jwt = require('jsonwebtoken');
 const pool = require('../config/db');
 
 const registerUser = async (req, res) => {
-    const { email, password } = req.body;
     try {
+        const { email, password, firstName, lastName } = req.body;
+
         // Hash password
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
 
         // Insert user into the database
         const query =
-            'INSERT INTO users (email, hashed_password) VALUES ($1, $2) RETURNING id, email;';
-        const values = [email, hashedPassword];
+            'INSERT INTO users (email, first_name, last_name, hashed_password) VALUES ($1, $2, $3, $4) RETURNING id, email;';
+        const values = [email, firstName, lastName, hashedPassword];
         const { rows } = await pool.query(query, values);
 
         // Return the new user
@@ -50,7 +51,7 @@ const loginUser = async (req, res) => {
         const userDetails = { id: user.id, email: user.email, role: user.role };
 
         // Generate JWT token
-        const token = jwt.sign(userDetails, process.env.JWT_SECRET, { expiresIn: '1h' });
+        const token = jwt.sign(userDetails, process.env.JWT_SECRET, { expiresIn: '16h' });
 
         res.json({
             message: 'Logged in successfully',
