@@ -63,11 +63,11 @@ const assignNewItem = async (req, res) => {
             const updateResult = await client.query(
                 `
                 UPDATE work_items
-                SET assigned_to = $1, status = 'in progress'
+                SET assigned_to = $1, status = 'WIP'
                 WHERE id = (
                     SELECT id FROM work_items
-                    WHERE status = 'pending' 
-                    ORDER BY priority ASC
+                    WHERE status = 'Unassigned' 
+                    ORDER BY priority ASC, due_date ASC
                     LIMIT 1
                 )
                 RETURNING *;
@@ -81,7 +81,7 @@ const assignNewItem = async (req, res) => {
             }
 
             const { rows } = await client.query(
-                "SELECT * FROM work_items WHERE assigned_to = $1 AND status = 'in progress'",
+                "SELECT * FROM work_items WHERE assigned_to = $1 AND status = 'WIP'",
                 [userId],
             );
 

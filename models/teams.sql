@@ -1,8 +1,9 @@
 CREATE TABLE teams (
     team_id SERIAL PRIMARY KEY,
     team_name VARCHAR(100) UNIQUE NOT NULL,
-    team_owner_id INT,
-    team_owner_email VARCHAR(100),
+    team_description TEXT,
+    team_owner_id INT NOT NULL,
+    team_owner_email VARCHAR(100) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 

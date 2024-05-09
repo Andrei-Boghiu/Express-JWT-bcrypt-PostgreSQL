@@ -69,9 +69,8 @@ const loginUser = async (req, res) => {
 const getUserProfile = async (req, res) => {
     try {
         const userId = req.user.id;
-        const query = 'SELECT id, email FROM users WHERE id = $1;';
-        const values = [userId];
-        const { rows } = await pool.query(query, values);
+        const query = 'SELECT id, email, first_name, last_name FROM users WHERE id = $1;';
+        const { rows } = await pool.query(query, [userId]);
         const user = rows[0];
 
         if (!user) {
@@ -107,9 +106,29 @@ const verifyTokenEndpoint = (req, res) => {
     });
 };
 
+const getAllUsers = async (req, res) => {
+    try {
+        // const userId = req.user.id;
+        // const publicColumns = 'id, email, first_name, last_name, role, team_id, isAdmin, isTeamAdmin, isManager, isAllocator, active, last_login, approved';
+        const { rows } = await pool.query(`SELECT id, email, first_name, last_name, isadmin FROM users;`);
+
+        if (rows.length === 0) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        res.json(rows);
+    } catch (error) {
+        console.error('Error fetching all users:', error);
+        res.status(500).json({
+            message: 'Error fetching users',
+        });
+    }
+};
+
 module.exports = {
     registerUser,
     loginUser,
     verifyTokenEndpoint,
     getUserProfile,
+    getAllUsers
 };
