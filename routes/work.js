@@ -1,5 +1,5 @@
 const express = require('express');
-const verifyToken = require('../middlewares/auth');
+const verifyToken = require('../middlewares/verifyToken');
 const authorize = require('../middlewares/authorize');
 
 const {
@@ -27,7 +27,7 @@ router.get('/dashboard/stats', verifyToken, authorize(['admin', 'manager']), (re
 
 // POST
 // ADMIN PROTECTED ROUTES
-router.post('/admin/add-items', verifyToken, authorize('admin'), adminAddItems);
+router.post('/admin/add-items', verifyToken, authorize(4), adminAddItems);
 
 // PATCH
 // ADMIN PROTECTED ROUTES

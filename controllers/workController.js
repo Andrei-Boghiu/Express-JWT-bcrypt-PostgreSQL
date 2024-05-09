@@ -4,7 +4,7 @@ const getUserItems = async (req, res) => {
     const userId = req.user.id;
     try {
         const { rows } = await pool.query(
-            "SELECT * FROM work_items WHERE assigned_to = $1 AND status = 'WIP'",
+            "SELECT * FROM work_items WHERE assignee_id = $1 AND status = 'Work in Progress'",
             [userId],
         );
         res.json(rows);
@@ -18,7 +18,6 @@ const adminAddItems = async (req, res) => {
     try {
         const workItems = req.body;
         const client = await pool.connect();
-
         try {
             await client.query('BEGIN');
 
