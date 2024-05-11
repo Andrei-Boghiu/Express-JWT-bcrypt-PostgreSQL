@@ -12,7 +12,7 @@ const authorize = (authorityLevelRequired = 5) => {
         }
 
         // check if the user is part of the team and if it has the same authority level as in headers
-        const query = `SELECT * FROM user_teams WHERE user_id = $1 AND team_id = $2`
+        const query = `SELECT role_id, approved FROM user_teams WHERE user_id = $1 AND team_id = $2`
         const { rows: user_teams_rows } = await pool.query(query, [userDetails.id, teamId]);
 
         if (user_teams_rows.length === 0 || !user_teams_rows[0]?.approved) {
