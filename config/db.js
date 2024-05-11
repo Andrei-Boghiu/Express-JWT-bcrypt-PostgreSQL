@@ -10,11 +10,11 @@ const pool = new Pool({
     port: process.env.PGPORT,
 });
 
+//  // * / Use this to test the connection with the database. // * /
 // async function test() {
-//     const time = await pool.query('SELECT NOW()')
-//     console.log(`Database connection time: ${time.rows[0].now}`)
-
+//     const time = await pool.query('SELECT NOW()');
+//     console.log(`Database connection time: ${time.rows[0].now}`);
 // }
-// test()
+// test();
 
 module.exports = pool;
