@@ -7,4 +7,4 @@ CREATE TABLE user_teams (
     approved_at TIMESTAMP WITH TIME ZONE,
     joined_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (user_id, team_id)
-)
+);

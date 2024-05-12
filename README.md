@@ -12,3 +12,6 @@ This repository contains a backend boilerplate built with Express.js, JSON Web T
 - **PostgreSQL**: Robust and scalable relational database management system.
 
 [...]
+
+
+<!-- TODO: Add a logger middleware -->
