@@ -8,7 +8,7 @@ This folder, `database`, contains a series of SQL files that define the structur
 
 Each file in this directory provides the SQL commands needed to create and manage different aspects of the database:
 
--   `users.sql`: Contains the SQL statement for creating the users table. This file defines the table with columns for user IDs, emails, and hashed passwords, ensuring each user has a unique identifier and secure password storage.
+- `users.sql`: Contains the SQL statement for creating the users table. This file defines the table with columns for user IDs, emails, and hashed passwords, ensuring each user has a unique identifier and secure password storage.
 
 [Loading...]
 
@@ -20,6 +20,17 @@ To set up the database, follow these steps:
 2. Prepare SQL Command: Write a CREATE TABLE statement defining your table and columns.
 3. Execute the SQL: Run the command in psql with `\i path/to/file.sql` or directly in pgAdmin.
 4. Verify Creation: Check the table with `\dt` or `\d tableName` in psql.
+
+### Order of Operations
+
+1. Create all the types from `postgres_types.sql` file.
+2. Create the table and insert the values from `roles.sql` file.
+3. Create the table from the `users.sql` file.
+4. Create the table from the `teams.sql` file but don't insert the values just yet.
+5. Create the table from the `user_teams.sql` file.
+6. Create the table from the `work_items.sql` file.
+7. Register the first user with the role `dev`.
+8. Insert the values from the `teams.sql` file.
 
 [Loading...]
 
