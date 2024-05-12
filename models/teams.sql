@@ -9,12 +9,11 @@ CREATE TABLE teams (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
--- Create a test team
-
-INSERT INTO teams (name, description, created_by, owned_by,approved, approved_by) 
+INSERT INTO teams (id, name, description, created_by, owned_by,approved, approved_by) 
 VALUES 
-	('DEV Team', 'A special team of developers performing maintenance and updates for this tool', 1,1, TRUE, 1 ),
-	('Test Team', 'A special team created for testing purposes.', 1,1, TRUE, 1 ),
-	('Admins Team', 'A special team of admins having the highest priority level.', 1,1, TRUE, 1 ),
-    ('Team Admins Team', 'A special team of admins having the required priority level to create teams..', 1,1, TRUE, 1 ),
-	('Managers Team', 'A team of managers having the highest visibility level.', 1,1, TRUE, 1)
+	(1959, 'DEV Team', 'A special team of developers performing maintenance and updates for this tool', 1,1, TRUE, 1 ), -- will have as work items feature requests and reported bugs from users 
+	(1930, 'Admins Team', 'A special team of admins having the highest authority level.', 1,1, TRUE, 1 ), -- will not have work items. will only manage teams and users, and view statistics.
+    (1914, 'Team Admins Team', 'A special team of admins having the required authority level to create and manage teams.', 1,1, TRUE, 1 ), -- will be able to create teams and manager their team/s.
+	(1775, 'Managers Team', 'A team of managers having the highest visibility level over statistics.', 1,1, TRUE, 1), -- will not have work items, only permissions to view statistics
+    (1, 'Forlorn hope', 'Small infantry units of soldiers chosen to take the vanguard in a military operation.', 1,1, TRUE, 1), -- will be used for tests
+    (2, 'Kamikaze Pilots', 'The Japanese word "kamikaze" is usually translated as "divine wind".', 1,1, TRUE, 1); -- will be used for tests
