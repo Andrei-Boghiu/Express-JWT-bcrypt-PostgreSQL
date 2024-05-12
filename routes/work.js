@@ -1,21 +1,22 @@
 const express = require('express');
+const router = express.Router();
+
+// Middleware
 const verifyToken = require('../middlewares/verifyToken');
 const authorize = require('../middlewares/authorize');
 
-const {
-    getUserItems,
-    adminAddItems,
-    assignNewItem,
-    unassignWorkItem,
-    completeWorkItem,
-} = require('../controllers/workController');
+// Controllers
+const lobby = require('../controllers/work/lobby');
+const insertWorkItems = require('../controllers/work/insertWorkItems');
+const assignWorkItem = require('../controllers/work/assignWorkItem');
+const unassignWorkItem = require('../controllers/work/unassignWorkItem');
+const completeWorkItem = require('../controllers/work/completeWorkItem');
 
-const router = express.Router();
+// to add middleware that verifies if the user really is from the team id received from the client.
 
 // GET
-// PROTECTED ROUTES
-router.get('/get-user-items', verifyToken, getUserItems);
-router.get('/assign-new-item', verifyToken, assignNewItem);
+router.get('/lobby', verifyToken, lobby);
+router.get('/assign-new-item', verifyToken, assignWorkItem);
 
 // ADMIN PROTECTED ROUTES
 router.get('/admin/data', verifyToken, authorize('admin'), (req, res) => {
@@ -25,15 +26,10 @@ router.get('/dashboard/stats', verifyToken, authorize(['admin', 'manager']), (re
     res.json({ stats: 'Some stats' });
 });
 
-// POST
-// ADMIN PROTECTED ROUTES
-router.post('/admin/add-items', verifyToken, authorize(4), adminAddItems);
+router.post('/admin/add-items', verifyToken, authorize(4), insertWorkItems);
 
-// PATCH
-// ADMIN PROTECTED ROUTES
-router.patch('/set-unassigned', verifyToken, authorize(['admin', 'manager']), unassignWorkItem);
+router.patch('/set-unassigned', verifyToken, authorize(1), unassignWorkItem);
 
-// PROTECTED ROUTES
 router.patch('/set-completed', verifyToken, completeWorkItem);
 
 module.exports = router;
