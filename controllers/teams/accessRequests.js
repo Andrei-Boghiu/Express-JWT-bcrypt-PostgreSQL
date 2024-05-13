@@ -1,8 +1,11 @@
 const pool = require('../../config/db');
 
-export const addNewTeam = async (req, res) => {
+
+
+module.exports = addNewTeam = async (req, res) => {
     try {
-        //
+
+
     } catch (error) {
         console.error('Error:', error);
         res.status(500).json({
@@ -12,7 +15,7 @@ export const addNewTeam = async (req, res) => {
     }
 };
 
-export const requestAdminTeamAccess = async (req, res) => {
+module.exports = requestAdminTeamAccess = async (req, res) => {
     try {
         //
     } catch (error) {

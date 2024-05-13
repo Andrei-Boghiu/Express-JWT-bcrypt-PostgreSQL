@@ -11,25 +11,20 @@ const authorize = (authorityLevelRequired = 5) => {
             return res.status(403).json({ message: 'Forbidden' });
         }
 
-        // check if the user is part of the team and if it has the same authority level as in headers
-        const query = `SELECT role_id, approved FROM user_teams WHERE user_id = $1 AND team_id = $2`
-        const { rows: user_teams_rows } = await pool.query(query, [userDetails.id, teamId]);
+        const query = `
+        SELECT 
+            t.approved as approved,  
+            r.authority_level as authority_level
+        FROM user_teams AS t
+        LEFT JOIN roles AS r on t.role_id = r.id
+        WHERE t.user_id = $1 AND t.team_id = $2`;
 
-        if (user_teams_rows.length === 0 || !user_teams_rows[0]?.approved) {
-            // user from token isn't part of the team from req.headers.Team_Id
-            // OR user is present but isn't approved in the team 
-            return res.status(403).json({ message: 'Forbidden' });
-        }
+        const { rows } = await pool.query(query, [userDetails.id, teamId]);
 
-        // check if it has the same role as in headers
-        const { rows: roles_rows } = await pool.query(`SELECT id, authority_level FROM roles WHERE id = $1`, [user_teams_rows[0].role_id])
-
-        if (roles_rows.length === 0) {
-            return res.status(500).json({ message: 'Server Error' });
-        }
-
-        if (roles_rows[0].authority_level != authorityLevel) {
-            // authority level from headers doesn't match with the one from the database
+        if (rows.length === 0 || !rows[0].approved || authorityLevel != rows[0].authority_level) {
+            // check if the user is part of the team (rows.length === 0)
+            // & approved in the team (!rows[0].approved)
+            // & has the same authority level as in headers (authorityLevel != rows[0].authority_level)
             return res.status(403).json({ message: 'Forbidden' });
         }
 

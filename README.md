@@ -14,4 +14,8 @@ This repository contains a backend boilerplate built with Express.js, JSON Web T
 [...]
 
 
-<!-- TODO: Add a logger middleware -->
+<!-- TODO: -->  
+<!-- * Add a logger middleware -->
+<!-- * Create an API for seeing all available teams in the request team access page -->
+<!-- * Create endpoint for requesting access in a team -->
+<!-- * Create endpoint for  -->
