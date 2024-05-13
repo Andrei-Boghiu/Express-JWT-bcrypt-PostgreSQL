@@ -4,13 +4,27 @@ module.exports = getAllUsers = async (req, res) => {
     try {
         // const userId = req.user.id;
         // const publicColumns = 'id, email, first_name, last_name, role, team_id, isAdmin, isTeamAdmin, isManager, isAllocator, active, last_login, approved';
-        const { rows } = await pool.query(`SELECT id, email, first_name, last_name FROM users;`);
+        const query = `
+                select 
+                    u.id,
+                    u.email,
+                    u.first_name,
+                    u.last_name,
+                    u.created_at,
+                    u.active,
+                    u.last_login,
+                    count(CASE WHEN t.approved = true THEN 1 END) as memberships,
+                    count(CASE WHEN t.approved = false THEN 1 END) as pending_memberships
+                FROM users AS u
+                LEFT JOIN user_teams AS t ON u.id = t.user_id
+                GROUP BY u.id;`;
+        const { rows } = await pool.query(query);
 
         if (rows.length === 0) {
             return res.status(404).json({ message: 'User not found' });
         }
 
-        res.json(rows);
+        res.json({ users: rows });
     } catch (error) {
         console.error('Error fetching all users:', error);
         res.status(500).json({

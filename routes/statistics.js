@@ -4,6 +4,6 @@ const authorize = require('../middlewares/authorize');
 const router = express.Router();
 
 // PROTECTED ROUTES
-router.get('/teams', verifyToken);
+router.get('/stats', verifyToken);
 
 module.exports = router;

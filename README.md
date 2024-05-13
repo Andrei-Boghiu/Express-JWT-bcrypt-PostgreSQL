@@ -16,6 +16,8 @@ This repository contains a backend boilerplate built with Express.js, JSON Web T
 
 <!-- TODO: -->  
 <!-- * Add a logger middleware -->
+<!-- * Each special role should have a set of tabs, and non-special teams should have default tabs -->
+<!-- * -->
 <!-- * Create an API for seeing all available teams in the request team access page -->
 <!-- * Create endpoint for requesting access in a team -->
 <!-- * Create endpoint for  -->

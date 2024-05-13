@@ -16,10 +16,6 @@ module.exports = requestAccess = async (req, res) => {
             case 1914: // team admins team?
                 roleId = 1911; // request role team admin
                 break;
-            case 1775: // managers team?
-                roleId = 1945 // request role manager
-                break;
-            // ? should I add a team for work allocators as well?
             default:
                 roleId = 1809;
         }

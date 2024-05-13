@@ -5,6 +5,7 @@ module.exports = teamsJoinedByUser = async (req, res) => {
         const userId = req.user.id;
 
         const joinTeamsRolesQuery = `select 
+                            concat(u.user_id, u.team_id) as id,
                             u.user_id,
                             u.team_id,
                             u.role_id,
