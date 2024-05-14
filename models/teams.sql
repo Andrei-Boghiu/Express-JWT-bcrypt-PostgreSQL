@@ -16,3 +16,9 @@ VALUES
     (1914, 'Team Admins Team', 'A special team of admins having the required authority level to create and manage teams.', 1,1, TRUE, 1 ), -- will be able to create teams and manager their team/s.
     (1, 'Forlorn hope', 'Small infantry units of soldiers chosen to take the vanguard in a military operation.', 1,1, TRUE, 1), -- will be used for tests
     (2, 'Kamikaze Pilots', 'The Japanese word "kamikaze" is usually translated as "divine wind".', 1,1, TRUE, 1); -- will be used for tests
+
+
+-- * Because I preassigned the id when inserting the teams, Postgres doesn't know that the ID of 1 is taken
+-- * and will try to assign the vale 1 for the next INSERT INTO statement that doesn't specify an id
+-- * Work Around: run the following query to set the next iteration to start from the highest id number + 1
+SELECT setval('teams_id_seq', (SELECT MAX(id) FROM teams) + 1)

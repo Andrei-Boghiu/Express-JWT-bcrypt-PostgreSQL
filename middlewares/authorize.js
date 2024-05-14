@@ -13,15 +13,17 @@ const authorize = (authorityLevelRequired = 5) => {
 
         const query = `
         SELECT 
-            t.approved as approved,  
+            ut.approved as user_is_approved_in_team,
+            t.approved as team_is_approved,
             r.authority_level as authority_level
-        FROM user_teams AS t
-        LEFT JOIN roles AS r on t.role_id = r.id
-        WHERE t.user_id = $1 AND t.team_id = $2`;
+        FROM user_teams AS ut
+        LEFT JOIN roles AS r ON ut.role_id = r.id
+        LEFT JOIN teams AS t ON ut.team_id = t.id
+        WHERE ut.user_id = $1 AND ut.team_id = $2`;
 
         const { rows } = await pool.query(query, [userDetails.id, teamId]);
 
-        if (rows.length === 0 || !rows[0].approved || authorityLevel != rows[0].authority_level) {
+        if (rows.length === 0 || !rows[0].team_is_approved || !rows[0].user_is_approved_in_team || authorityLevel != rows[0].authority_level) {
             // check if the user is part of the team (rows.length === 0)
             // & approved in the team (!rows[0].approved)
             // & has the same authority level as in headers (authorityLevel != rows[0].authority_level)

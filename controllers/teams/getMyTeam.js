@@ -22,7 +22,7 @@ module.exports = getMyTeam = async (req, res) => {
 
         const { rows } = await pool.query(query, [teamId]);
 
-        res.json({ teams: rows?.length > 0 ? rows : [], });
+        res.json({ members: rows?.length > 0 ? rows : [], });
     } catch (error) {
         console.error('Error fetching approved teams:', error);
         res.status(500).json({
