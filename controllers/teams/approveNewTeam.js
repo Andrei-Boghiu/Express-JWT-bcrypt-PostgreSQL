@@ -34,6 +34,8 @@ module.exports = approveNewTeam = async (req, res) => {
             console.log('Transaction failed for approving team:', error);
             await client.query('ROLLBACK');
             res.status(500).send('Failed to assign work item.');
+        } finally {
+            client.release();
         }
     } catch (error) {
         console.log('Failed to connect to the database:', error);

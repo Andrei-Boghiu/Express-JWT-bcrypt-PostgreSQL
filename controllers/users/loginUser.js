@@ -8,8 +8,8 @@ module.exports = loginUser = async (req, res) => {
     try {
         // Check if user exists
         const usersQuery = 'SELECT * FROM users WHERE email = $1;';
-        const { rows: usersTows } = await pool.query(usersQuery, [email]);
-        const usersTable = usersTows[0];
+        const { rows: usersRows } = await pool.query(usersQuery, [email]);
+        const usersTable = usersRows[0];
 
         if (!usersTable) {
             return res.status(404).json({ message: 'Invalid credentials' });
@@ -43,6 +43,13 @@ module.exports = loginUser = async (req, res) => {
                         where u.user_id = $1`;
         const { rows: userTeamsRows } = await pool.query(joinTeamsRolesQuery, [usersTable.id]);
 
+        pool.query(
+            `UPDATE users
+            SET last_login = CURRENT_TIMESTAMP
+            WHERE id = $1`,
+            [usersTable.id],
+        );
+
         const userDetails = {
             id: usersTable.id,
             username: usersTable.username,
@@ -57,7 +64,7 @@ module.exports = loginUser = async (req, res) => {
         res.json({
             message: 'Logged in successfully',
             token,
-            user: userDetails,
+            ...userDetails,
         });
     } catch (error) {
         console.error('Error logging in:', error);

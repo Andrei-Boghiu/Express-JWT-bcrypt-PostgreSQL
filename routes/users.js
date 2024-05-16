@@ -17,7 +17,7 @@ router.post('/register', registerUser);
 router.post('/login', loginUser);
 
 // PROTECTED ROUTES
-router.get('/verify-token', verifyToken, verifyJWT);
+router.get('/verify-token', verifyJWT);
 router.get('/get-all-users', verifyToken, authorize(1), getAllUsers); // Admins only
 router.get('/user-profile', verifyToken, userProfile);
 

@@ -2,7 +2,6 @@ const pool = require('../../config/db');
 
 module.exports = getAllTeams = async (req, res) => {
     try {
-
         const query = `
             SELECT  
                 t.id as id,
@@ -19,7 +18,7 @@ module.exports = getAllTeams = async (req, res) => {
 
         const { rows } = await pool.query(query, []);
 
-        res.json({ teams: rows?.length > 0 ? rows : [], });
+        res.json(rows);
     } catch (error) {
         console.error('Error fetching approved teams:', error);
         res.status(500).json({

@@ -8,7 +8,7 @@ This folder, `database`, contains a series of SQL files that define the structur
 
 Each file in this directory provides the SQL commands needed to create and manage different aspects of the database:
 
-- `users.sql`: Contains the SQL statement for creating the users table. This file defines the table with columns for user IDs, emails, and hashed passwords, ensuring each user has a unique identifier and secure password storage.
+-   `users.sql`: Contains the SQL statement for creating the users table. This file defines the table with columns for user IDs, emails, and hashed passwords, ensuring each user has a unique identifier and secure password storage.
 
 [Loading...]
 
@@ -27,15 +27,16 @@ To set up the database, follow these steps:
 2. Create the table and insert the values from `roles.sql` file.
 3. Create the table from the `users.sql` file.
 4. Create the table from the `teams.sql` file but don't insert the values just yet.
-5. Create the table from the `user_teams.sql` file.
+5. Create the table from the `user_teams.sql` file but don't insert the values just yet.
 6. Create the table from the `work_items.sql` file.
 7. Register the first user with the role `dev`.
-    * Start the Express server using `npm run dev`.
-    * Start the React application using `npm start`.
-    * Be sure to update the CORS whitelist from `/Express-JWT-bcrypt-PostgreSQL/config/corsOptions.js` if needed.
-    * Be sure to update the `BASE_URL` from `/React-Redux-Axios/src/api/config.js` if needed.
+    - Start the Express server using `npm run dev`.
+    - Start the React application using `npm start`.
+    - Be sure to update the CORS whitelist from `/Express-JWT-bcrypt-PostgreSQL/config/corsOptions.js` if needed.
+    - Be sure to update the `BASE_URL` from `/React-Redux-Axios/src/api/config.js` if needed.
 8. Insert the values from the `teams.sql` file.
-9. Run the following command: `SELECT setval('teams_id_seq', (SELECT MAX(id) FROM teams) + 1)` Further details can be found in `teams.sql` file.
+9. Insert the values from the `user_teams.sql` file.
+10. Run the following command: `SELECT setval('teams_id_seq', (SELECT MAX(id) FROM teams) + 1)`. More details in `teams.sql` file.
 
 [Loading...]
 

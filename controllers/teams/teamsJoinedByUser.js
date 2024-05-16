@@ -34,7 +34,7 @@ module.exports = teamsJoinedByUser = async (req, res) => {
                 WHERE u.user_id = $1`;
         const { rows } = await pool.query(joinTeamsRolesQuery, [userId]);
 
-        res.json({ teams: rows?.length > 0 ? rows : [], });
+        res.json(rows);
     } catch (error) {
         console.error('Error:', error);
         res.status(500).json({

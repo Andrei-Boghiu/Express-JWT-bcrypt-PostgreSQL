@@ -12,7 +12,28 @@ module.exports = getAllUsers = async (req, res) => {
                     u.last_name,
                     u.created_at,
                     u.active,
-                    u.last_login,
+                    TRIM(
+                        COALESCE(
+                            NULLIF(EXTRACT(YEAR FROM AGE(NOW(), u.last_login))::TEXT || ' years', '0 years'), 
+                            ''
+                        ) || ' ' || 
+                        COALESCE(
+                            NULLIF(EXTRACT(MONTH FROM AGE(NOW(), u.last_login))::TEXT || ' months', '0 months'), 
+                            ''
+                        ) || ' ' || 
+                        COALESCE(
+                            NULLIF(EXTRACT(DAY FROM AGE(NOW(), u.last_login))::TEXT || ' days', '0 days'), 
+                            ''
+                        ) || ' ' || 
+                        COALESCE(
+                            NULLIF(EXTRACT(HOUR FROM AGE(NOW(), u.last_login))::TEXT || ' hours', '0 hours'), 
+                            ''
+                        ) || ' ' || 
+                        COALESCE(
+                            NULLIF(EXTRACT(MINUTE FROM AGE(NOW(), u.last_login))::TEXT || ' minutes', '0 minutes'), 
+                            ''
+                        )
+                    ) AS "Last Login",
                     count(CASE WHEN t.approved = true THEN 1 END) as memberships,
                     count(CASE WHEN t.approved = false THEN 1 END) as pending_memberships
                 FROM users AS u
@@ -24,7 +45,7 @@ module.exports = getAllUsers = async (req, res) => {
             return res.status(404).json({ message: 'User not found' });
         }
 
-        res.json({ users: rows });
+        res.json(rows);
     } catch (error) {
         console.error('Error fetching all users:', error);
         res.status(500).json({

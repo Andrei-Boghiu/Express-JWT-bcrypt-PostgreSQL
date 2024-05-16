@@ -1,28 +1,33 @@
 const pool = require('../../config/db');
 const calculateColumnAge = require('../../utils/queries');
 
-module.exports = getMyTeam = async (req, res) => {
+module.exports = getAdminMembers = async (req, res) => {
     try {
-        const teamId = req.body.teamId;
         const lastLoginAge = calculateColumnAge('u.last_login', 'Last Login');
 
         const query = `
             SELECT
-                t.user_id as id, 
-                u.email AS email,
-                u.first_name AS first_name,
-                u.last_name AS last_name,
-                u.active AS active,
+                concat(t.user_id, t.team_id) as id,
+                t.user_id AS uid,
+                t.team_id AS tid,
+                u.email AS "User Email",
+                u.first_name AS "First Name",
+                u.last_name AS "Last Name",
+                ts.name as "Team",
+                r.name AS "Role",
+                u.active AS "Active",
                 ${lastLoginAge},
                 t.approved AS approved,
                 u2.email as approver
-                
+
             FROM user_teams AS t
             LEFT JOIN users AS u ON t.user_id = u.id
             LEFT JOIN users AS u2 ON t.approved_by = u2.id 
-            WHERE t.team_id = $1;`;
+            LEFT JOIN teams AS ts ON t.team_id = ts.id
+            LEFT JOIN roles AS r ON t.role_id = r.id
+            WHERE t.team_id = 1914 OR t.team_id = 1930;`;
 
-        const { rows } = await pool.query(query, [teamId]);
+        const { rows } = await pool.query(query);
 
         res.json(rows);
     } catch (error) {

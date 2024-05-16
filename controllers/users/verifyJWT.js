@@ -15,7 +15,7 @@ module.exports = verifyJWT = (req, res) => {
 
         res.json({
             message: 'Token is valid',
-            user: decoded,
+            ...decoded,
         });
     });
 };
