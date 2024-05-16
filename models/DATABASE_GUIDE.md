@@ -30,7 +30,12 @@ To set up the database, follow these steps:
 5. Create the table from the `user_teams.sql` file.
 6. Create the table from the `work_items.sql` file.
 7. Register the first user with the role `dev`.
+    * Start the Express server using `npm run dev`.
+    * Start the React application using `npm start`.
+    * Be sure to update the CORS whitelist from `/Express-JWT-bcrypt-PostgreSQL/config/corsOptions.js` if needed.
+    * Be sure to update the `BASE_URL` from `/React-Redux-Axios/src/api/config.js` if needed.
 8. Insert the values from the `teams.sql` file.
+9. Run the following command: `SELECT setval('teams_id_seq', (SELECT MAX(id) FROM teams) + 1)` Further details can be found in `teams.sql` file.
 
 [Loading...]
 

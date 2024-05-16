@@ -12,3 +12,4 @@ VALUES
     (1911, 'team_admin', 2), -- allocator and manager privileges + can create teams (needs approval) and view teams statistics
     (1969, 'admin', 1), -- can approve or deny new teams and manage every team and user
     (1971, 'dev', 0); -- same as admin but will have access to a thread with reported issues and feature requests
+    
