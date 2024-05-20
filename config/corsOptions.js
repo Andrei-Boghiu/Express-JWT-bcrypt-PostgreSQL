@@ -1,9 +1,8 @@
 const whitelist = [
     'https://www.replace-with-yoursite.com',
-    'http://127.0.0.1:5500', // There's no place like 127.0.0.1
+    'http://127.0.0.1:5656', // There's no place like 127.0.0.1
+    'http://localhost:5656', // OG
     'http://localhost:3500', // Dave Gray's favorite
-    'http://localhost:3000', // OG 
-    'http://localhost:5656', // OG 
 ];
 
 const corsOptions = {
