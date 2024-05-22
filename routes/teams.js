@@ -16,6 +16,7 @@ const getMyTeam = require('../controllers/teams/getMyTeam');
 const approveNewMember = require('../controllers/teams/approveNewMember');
 const approveNewTeam = require('../controllers/teams/approveNewTeam');
 const getAdminMembers = require('../controllers/teams/getAdminMembers');
+const getUpdatedTeamsInfo = require('../controllers/teams/getUpdatedTeamsInfo');
 
 // PROTECTED ROUTES
 router.get('/available-to-join', verifyToken, availableTeamsToJoin);
@@ -24,6 +25,7 @@ router.get('/check-user-teams', verifyToken, teamsJoinedByUser);
 router.get('/all-teams', verifyToken, authorize(1), getAllTeams);
 router.get('/my-teams', verifyToken, getMyTeams);
 router.get('/admin-members', verifyToken, authorize(1), getAdminMembers);
+router.get('/updated-teams-info', verifyToken, getUpdatedTeamsInfo);
 
 router.post('/request-access', verifyToken, requestAccess);
 router.post('/request-create-new-team', verifyToken, authorize(3), requestCreateNewTeam);
