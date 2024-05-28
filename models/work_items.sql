@@ -4,6 +4,7 @@ CREATE TABLE work_items (
     priority INTEGER DEFAULT 6,
     status work_item_status DEFAULT 'Unassigned', -- Unassigned / Work in Progress / Resolved / Reopened / Removed / Pending
     created_by INT REFERENCES users(id),
+    updated_by INT REFERENCES users(id),
     assignee_id INT REFERENCES users(id),
     due_date TIMESTAMP WITH TIME ZONE,
     follow_up_date TIMESTAMP WITH TIME ZONE,

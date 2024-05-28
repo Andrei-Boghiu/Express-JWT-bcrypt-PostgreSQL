@@ -6,30 +6,31 @@ const verifyToken = require('../middlewares/verifyToken');
 const authorize = require('../middlewares/authorize');
 
 // Controllers
-const lobby = require('../controllers/work/lobby');
-const insertWorkItems = require('../controllers/work/insertWorkItems');
-const assignWorkItem = require('../controllers/work/assignWorkItem');
-const unassignWorkItem = require('../controllers/work/unassignWorkItem');
-const completeWorkItem = require('../controllers/work/completeWorkItem');
+const addNewWorkItems = require('../controllers/work/allocation/addNewWorkItems');
+const updateWorkItems = require('../controllers/work/allocation/updateWorkItems');
+const addUpdateWorkItems = require('../controllers/work/allocation/addUpdateWorkItems');
+const removeWorkItems = require('../controllers/work/allocation/removeWorkItems');
+const addAdhocTask = require('../controllers/work/allocation/addAdhocTask');
 
-// to add middleware that verifies if the user really is from the team id received from the client.
+const lobby = require('../controllers/work/distribution/userLobby');
+const assignWorkItem = require('../controllers/work/distribution/assignWorkItem');
 
-// GET
-router.get('/lobby', verifyToken, lobby);
-router.get('/assign-new-item', verifyToken, assignWorkItem);
+const transferWorkItem = require('../controllers/work/operations/transferWorkItem');
+const updateStatus = require('../controllers/work/operations/updateStatus');
 
-// ADMIN PROTECTED ROUTES
-router.get('/admin/data', verifyToken, authorize('admin'), (req, res) => {
-    res.json({ adminData: 'Some sensitive data' });
-});
-router.get('/dashboard/stats', verifyToken, authorize(['admin', 'manager']), (req, res) => {
-    res.json({ stats: 'Some stats' });
-});
+// ALLOCATION ROUTES
+router.post('/allocation/add-new-items', verifyToken, authorize(4), addNewWorkItems);
+router.post('/allocation/update-items', verifyToken, authorize(4), updateWorkItems);
+router.post('/allocation/add-update-items', verifyToken, authorize(4), addUpdateWorkItems);
+router.post('/allocation/remove-items', verifyToken, authorize(4), removeWorkItems);
+router.post('/allocation/add-adhoc-task', verifyToken, authorize(4), addAdhocTask);
 
-router.post('/admin/add-items', verifyToken, authorize(4), insertWorkItems);
+// DISTRIBUTION ROUTES
+router.get('/distribution/user-lobby', verifyToken, authorize(5), lobby);
+router.get('/distribution/get-item', verifyToken, authorize(5), assignWorkItem);
 
-router.patch('/set-unassigned', verifyToken, authorize(1), unassignWorkItem);
-
-router.patch('/set-completed', verifyToken, completeWorkItem);
+// OPERATIONS ROUTES
+router.patch('/operations/transfer-item', verifyToken, authorize(5), transferWorkItem);
+router.patch('/operations/update-status', verifyToken, authorize(5), updateStatus);
 
 module.exports = router;

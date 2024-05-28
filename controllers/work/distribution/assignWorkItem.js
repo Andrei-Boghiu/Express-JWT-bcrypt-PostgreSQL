@@ -1,41 +1,49 @@
-const pool = require('../../config/db');
+const pool = require('../../../config/db');
 
 module.exports = assignWorkItem = async (req, res) => {
     try {
         const userId = req.user.id;
-        const client = await pool.connect();
+        const teamId = req.headers?.team_id;
 
+        if (!userId || !teamId) {
+            return res.status(400).json({ message: 'Invalid request' });
+        }
+
+        const client = await pool.connect();
         try {
             await client.query('BEGIN');
 
             const updateResult = await client.query(
                 `
                 UPDATE work_items
-                SET assigned_to = $1, status = 'WIP'
+                SET assigned_to = $1, status = 'Work in Progress'
                 WHERE id = (
                     SELECT id FROM work_items
-                    WHERE status = 'Unassigned' 
+                    WHERE status IN ('Unassigned', 'Reopened') AND team_id = $2 AND assigned_to IS NULL
                     ORDER BY priority ASC, due_date ASC
                     LIMIT 1
                 )
                 RETURNING *;
                 `,
-                [userId],
+                [userId, teamId],
             );
 
             if (updateResult.rows.length === 0) {
                 res.status(404).send('No pending work items available.');
-                return;
+                await client.query('COMMIT');
+                return
             }
+            await client.query('COMMIT');
 
-            const { rows } = await client.query(
-                "SELECT * FROM work_items WHERE assigned_to = $1 AND status = 'WIP'",
-                [userId],
+            const { rows } = await pool.query(
+                `SELECT * FROM work_items 
+                WHERE assignee_id = $1 AND team_id = $2
+                    AND status NOT IN ('Resolved', 'Removed')`,
+                [userId, teamId],
             );
 
             res.json(rows);
 
-            await client.query('COMMIT');
         } catch (error) {
             console.log('Transaction failed:', error);
             await client.query('ROLLBACK');

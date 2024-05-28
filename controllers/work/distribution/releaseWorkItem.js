@@ -1,4 +1,4 @@
-const pool = require('../../config/db');
+const pool = require('../../../config/db');
 
 module.exports = unassignWorkItem = async (req, res) => {
     try {
@@ -6,12 +6,14 @@ module.exports = unassignWorkItem = async (req, res) => {
         // const { id } = req.user;
         // console.log(`UserId: ${id} \nWorkItemId: ${workItemId}`);
 
-        await pool.query(
-            `UPDATE work_items
-            SET assigned_to = NULL, status = 'pending'
-            WHERE id = $1;`,
-            [workItemId],
-        );
+        console.log(workItemId)
+
+        // await pool.query(
+        //     `UPDATE work_items
+        //     SET assigned_to = NULL, status = 'pending'
+        //     WHERE id = $1;`,
+        //     [workItemId],
+        // );
 
         res.status(201).json({ message: 'Work item unassigned successfully.' });
     } catch (error) {
@@ -19,3 +21,5 @@ module.exports = unassignWorkItem = async (req, res) => {
         res.status(500).send('Failed to unassigned work item.');
     }
 };
+
+// releaseWorkItem
