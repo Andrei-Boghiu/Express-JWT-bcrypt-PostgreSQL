@@ -12,7 +12,18 @@ module.exports = lobby = async (req, res) => {
 
     try {
         const { rows } = await pool.query(
-            `SELECT * FROM work_items 
+            `SELECT 
+                id,
+                aux_id,
+                aux_tool,
+                aux_subject,
+                aux_status,
+                aux_queue,
+                aux_creation_date,
+                status,
+                priority,
+                due_date
+            FROM work_items 
             WHERE assignee_id = $1 AND team_id = $2
                 AND status NOT IN ('Resolved', 'Removed')`,
             [userId, teamId],

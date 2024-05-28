@@ -2,6 +2,7 @@ const pool = require('../../../config/db');
 
 module.exports = assignWorkItem = async (req, res) => {
     try {
+        console.log("assignWorkItem")
         const userId = req.user.id;
         const teamId = req.headers?.team_id;
 
@@ -16,10 +17,10 @@ module.exports = assignWorkItem = async (req, res) => {
             const updateResult = await client.query(
                 `
                 UPDATE work_items
-                SET assigned_to = $1, status = 'Work in Progress'
+                SET assignee_id = $1, status = 'Work in Progress', last_assigned_at = CURRENT_TIMESTAMP WITH TIMEZONE
                 WHERE id = (
                     SELECT id FROM work_items
-                    WHERE status IN ('Unassigned', 'Reopened') AND team_id = $2 AND assigned_to IS NULL
+                    WHERE status IN ('Unassigned', 'Reopened') AND team_id = $2 AND assignee_id IS NULL
                     ORDER BY priority ASC, due_date ASC
                     LIMIT 1
                 )

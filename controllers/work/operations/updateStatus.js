@@ -25,7 +25,7 @@ module.exports = updateStatus = async (req, res) => {
             last_resolved_at = CURRENT_TIMESTAMP WITH TIMEZONE,
             updated_by = ${user_id} 
         WHERE team_id = ${teamId} AND aux_id = '${aux_id}'`;
-        await client.query(updateQuery);
+        await pool.query(updateQuery);
 
         return res.status(200)
     } catch (error) {
