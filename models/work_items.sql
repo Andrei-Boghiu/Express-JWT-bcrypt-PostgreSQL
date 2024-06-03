@@ -19,5 +19,7 @@ CREATE TABLE work_items (
     aux_subject TEXT,
     aux_status VARCHAR(50),
     aux_queue VARCHAR(100),
-    aux_creation_date TIMESTAMP WITH TIME ZONE
+    aux_creation_date TIMESTAMP WITH TIME ZONE,
+
+    additional_info TEXT
 );

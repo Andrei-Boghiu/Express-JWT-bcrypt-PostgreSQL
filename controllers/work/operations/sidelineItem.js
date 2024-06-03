@@ -4,14 +4,12 @@ const pool = require('../../../config/db');
 
 module.exports = updateStatus = async (req, res) => {
     try {
-        const newStatus = req.body?.newStatus;
+        const newStatus = req.body?.status;
         const aux_id = req.body?.aux_id;
         const user_id = req.user.id;
         const teamId = req.headers?.team_id;
 
-        console.log("newStatus:", newStatus);
-        console.log("aux_id:", aux_id);
-        console.log("user_id:", user_id);
+        console.log("approverId:", creator_id);
         console.log("teamId:", teamId);
 
         const validStatus = userStatusChange.includes(newStatus);
@@ -20,14 +18,14 @@ module.exports = updateStatus = async (req, res) => {
             return res.status(400).json({ message: 'Invalid request' });
         }
 
-        // const updateQuery = `
-        // UPDATE work_items 
-        //     SET 
-        //     status = '${newStatus}', 
-        //     last_resolved_at = CURRENT_TIMESTAMP WITH TIMEZONE,
-        //     updated_by = ${user_id} 
-        // WHERE team_id = ${teamId} AND aux_id = '${aux_id}'`;
-        // await pool.query(updateQuery);
+        const updateQuery = `
+        UPDATE work_items 
+            SET 
+            status = '${newStatus}', 
+            last_resolved_at = CURRENT_TIMESTAMP WITH TIMEZONE,
+            updated_by = ${user_id} 
+        WHERE team_id = ${teamId} AND aux_id = '${aux_id}'`;
+        await pool.query(updateQuery);
 
         return res.status(200)
     } catch (error) {
