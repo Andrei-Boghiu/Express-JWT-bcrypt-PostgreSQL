@@ -3,6 +3,7 @@ CREATE TABLE work_items (
     team_id INT REFERENCES teams(id) NOT NULL,
     priority INTEGER DEFAULT 6,
     status work_item_status DEFAULT 'Unassigned', -- Unassigned / Work in Progress / Resolved / Reopened / Removed / Pending
+    resolution work_item_resolution,
     created_by INT REFERENCES users(id),
     updated_by INT REFERENCES users(id),
     assignee_id INT REFERENCES users(id),
@@ -21,5 +22,11 @@ CREATE TABLE work_items (
     aux_queue VARCHAR(100),
     aux_creation_date TIMESTAMP WITH TIME ZONE,
 
-    additional_info TEXT
+    additional_info TEXT,
+    -- annotation ARRAY of TEXT strings, will be rendered on the case viewer page
+    -- annotations can be added by users to let notes on the work item 
+    -- additional notes like special details of the item or reasons for certain situations 
+
+
+
 );

@@ -19,7 +19,6 @@ module.exports = addAdhocTasks = async (req, res) => {
         // try {
         //     await client.query('BEGIN');
 
-
         //     await client.query('COMMIT');
         //     res.status(201).json({ message: `Work items successfully uploaded.` });
         // } catch (error) {
