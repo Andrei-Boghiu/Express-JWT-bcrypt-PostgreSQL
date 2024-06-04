@@ -30,7 +30,7 @@ router.get('/distribution/user-lobby', verifyToken, authorize(5), lobby);
 router.get('/distribution/get-item', verifyToken, authorize(5), assignWorkItem);
 
 // OPERATIONS ROUTES
-router.patch('/operations/transfer-item', verifyToken, authorize(5), transferWorkItem);
-router.patch('/operations/update-status', verifyToken, authorize(5), updateStatus);
+router.post('/operations/transfer-item', verifyToken, authorize(5), transferWorkItem);
+router.post('/operations/update-status', verifyToken, authorize(5), updateStatus);
 
 module.exports = router;

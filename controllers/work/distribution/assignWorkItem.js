@@ -17,7 +17,7 @@ module.exports = assignWorkItem = async (req, res) => {
             const updateResult = await client.query(
                 `
                 UPDATE work_items
-                SET assignee_id = $1, status = 'Work in Progress', last_assigned_at = CURRENT_TIMESTAMP WITH TIMEZONE
+                SET assignee_id = $1, status = 'Work in Progress', last_assigned_at = CURRENT_TIMESTAMP
                 WHERE id = (
                     SELECT id FROM work_items
                     WHERE status IN ('Unassigned', 'Reopened') AND team_id = $2 AND assignee_id IS NULL
@@ -37,7 +37,18 @@ module.exports = assignWorkItem = async (req, res) => {
             await client.query('COMMIT');
 
             const { rows } = await pool.query(
-                `SELECT * FROM work_items 
+                `SELECT 
+                    id,
+                    aux_id,
+                    aux_tool,
+                    aux_status,
+                    status,
+                    resolution,
+                    priority,
+                    due_date,
+                    follow_up_date,
+                    annotation
+                FROM work_items 
                 WHERE assignee_id = $1 AND team_id = $2
                     AND status NOT IN ('Resolved', 'Removed')`,
                 [userId, teamId],

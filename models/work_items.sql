@@ -23,10 +23,9 @@ CREATE TABLE work_items (
     aux_creation_date TIMESTAMP WITH TIME ZONE,
 
     additional_info TEXT,
+    annotation TEXT,
     -- annotation ARRAY of TEXT strings, will be rendered on the case viewer page
-    -- annotations can be added by users to let notes on the work item 
+    -- annotations can be added by users to let notes on the work item
     -- additional notes like special details of the item or reasons for certain situations 
-
-
 
 );

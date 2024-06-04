@@ -43,7 +43,8 @@ const updateSomeHeaders = [
 
 const userStatusChange = [
     'Resolved',
-    'Pending'
+    'Pending',
+    'Unassigned'
 ]
 
 module.exports = { uploadRequiredHeaders, updateRequiredHeaders, updateSomeHeaders, acceptableHeaders, forbiddenHeaders, userStatusChange }

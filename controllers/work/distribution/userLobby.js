@@ -13,19 +13,19 @@ module.exports = lobby = async (req, res) => {
     try {
         const { rows } = await pool.query(
             `SELECT 
-                id,
-                aux_id,
-                aux_tool,
-                aux_subject,
-                aux_status,
-                aux_queue,
-                aux_creation_date,
-                status,
-                priority,
-                due_date
-            FROM work_items 
-            WHERE assignee_id = $1 AND team_id = $2
-                AND status NOT IN ('Resolved', 'Removed')`,
+            id,
+            aux_id,
+            aux_tool,
+            aux_status,
+            status,
+            resolution,
+            priority,
+            due_date AS "Due Date", 
+            follow_up_date AS "Follow Up", 
+            annotation
+        FROM work_items 
+        WHERE assignee_id = $1 AND team_id = $2
+            AND status NOT IN ('Resolved', 'Removed')`,
             [userId, teamId],
         );
         res.json(rows);
