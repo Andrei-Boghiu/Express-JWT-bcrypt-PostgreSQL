@@ -45,7 +45,8 @@ module.exports = updateStatus = async (req, res) => {
         const releaseItemQuery = `
             UPDATE work_items 
             SET 
-            status = 'Unassigned',
+            status = 'Unassigned', 
+            assignee_id = null,
             annotation = 'Release reason: ${additional_info}', 
             last_resolved_at = CURRENT_TIMESTAMP,
             updated_by = ${user_id} 

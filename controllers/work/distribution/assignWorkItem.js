@@ -19,9 +19,49 @@ module.exports = assignWorkItem = async (req, res) => {
                 UPDATE work_items
                 SET assignee_id = $1, status = 'Work in Progress', last_assigned_at = CURRENT_TIMESTAMP
                 WHERE id = (
-                    SELECT id FROM work_items
-                    WHERE status IN ('Unassigned', 'Reopened') AND team_id = $2 AND assignee_id IS NULL
-                    ORDER BY priority ASC, due_date ASC
+                    WITH priority_ordered_work_items AS (
+                        SELECT
+                            CASE
+
+                                
+                                WHEN EXISTS (
+                                    SELECT 1
+                                    FROM users u
+                                    WHERE split_part(u.email, '@', 1) = wi.aux_owner
+                                      AND u.id = $1 
+                                )
+
+                                THEN wi.priority - 2
+                                WHEN AGE(NOW(), wi.follow_up_date) > INTERVAL '12 hours'
+                                THEN wi.priority - 2
+                                WHEN AGE(wi.due_date, NOW()) < INTERVAL '0'
+                                THEN wi.priority + 1
+                                WHEN AGE(wi.due_date, NOW()) < INTERVAL '2 hours'
+                                THEN wi.priority - 1
+                                ELSE wi.priority
+                            END AS priority_calc,
+
+                            id
+                        
+                        FROM
+                            work_items wi
+                        WHERE
+                            team_id = $2
+                            AND status IN ('Unassigned', 'Reopened', 'Pending') 
+                            AND id NOT IN (
+                                SELECT id FROM work_items WHERE assignee_id = $1
+                            )
+                            AND (
+                                (AGE(NOW(), wi.follow_up_date) > INTERVAL '12 hours' AND wi.status = 'Pending')
+                                OR wi.status IN ('Unassigned', 'Reopened')
+                            )
+                        ORDER BY priority_calc, wi.follow_up_date,  due_date
+                    )
+                    
+                    SELECT
+                        id
+                    FROM
+                        priority_ordered_work_items
                     LIMIT 1
                 )
                 RETURNING *;
