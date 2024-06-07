@@ -10,22 +10,15 @@ module.exports = updateStatus = async (req, res) => {
         const resolution = req.body?.resolution;
         const annotation = req.body?.annotation;
         const followUp = req.body?.follow_up_date;
-        const additional_info = req.body?.additional_info;
 
         const user_id = req.user.id;
         const teamId = req.headers?.team_id;
 
         console.log("------" + new Date().toISOString() + "------")
         console.log("body:", body);
-        console.log("aux_id:", aux_id);
-        console.log("user_id:", user_id);
-        console.log("teamId:", teamId);
 
         const resolutionCheck = newStatus !== "Unassigned" ? resolution : true;
         const validStatus = userStatusChange.includes(newStatus);
-
-        console.log("resolutionCheck", !resolutionCheck)
-        console.log("validStatus", !validStatus)
 
         if (!aux_id || !newStatus || !validStatus || !teamId || !resolutionCheck) {
             return res.status(400).json({ message: 'Invalid request' });
@@ -47,7 +40,7 @@ module.exports = updateStatus = async (req, res) => {
             SET 
             status = 'Unassigned', 
             assignee_id = null,
-            annotation = 'Release reason: ${additional_info}', 
+            annotation = 'Release reason: ${annotation}', 
             last_resolved_at = CURRENT_TIMESTAMP,
             updated_by = ${user_id} 
         WHERE team_id = ${teamId} AND aux_id = '${aux_id}'`;

@@ -15,7 +15,7 @@ CREATE TABLE work_items (
     last_assigned_at TIMESTAMP WITH TIME ZONE,
     last_resolved_at TIMESTAMP WITH TIME ZONE,
   
-    aux_id VARCHAR(100) UNIQUE NOT NULL,
+    aux_id VARCHAR(100) NOT NULL,
     aux_tool VARCHAR(255) NOT NULL,
     aux_subject TEXT,
     aux_status VARCHAR(50),
@@ -24,8 +24,10 @@ CREATE TABLE work_items (
     aux_owner VARCHAR(100),
 
     additional_info TEXT,
-    annotation TEXT
-    -- annotation ARRAY of TEXT strings, will be rendered on the case viewer page
-    -- annotations can be added by users to let notes on the work item
-    -- additional notes like special details of the item or reasons for certain situations 
+    annotation TEXT,
+
+    UNIQUE (aux_id, team_id)
 );
+
+-- ? TO DO:
+-- * Create a table 'annotations' where all annotations will be present and will be connected to work items
