@@ -18,6 +18,8 @@ const assignWorkItem = require('../controllers/work/distribution/assignWorkItem'
 const transferWorkItem = require('../controllers/work/operations/transferWorkItem');
 const updateStatus = require('../controllers/work/operations/updateStatus');
 
+const availableItemsOverview = require('../controllers/work/overview/availableItemsOverview');
+
 // ALLOCATION ROUTES
 router.post('/allocation/add-new-items', verifyToken, authorize(4), addNewWorkItems);
 router.post('/allocation/update-items', verifyToken, authorize(4), updateWorkItems);
@@ -32,5 +34,9 @@ router.get('/distribution/get-item', verifyToken, authorize(5), assignWorkItem);
 // OPERATIONS ROUTES
 router.post('/operations/transfer-item', verifyToken, authorize(5), transferWorkItem);
 router.post('/operations/update-status', verifyToken, authorize(5), updateStatus);
+
+// OVERVIEW
+router.get('/overview/ingestion', verifyToken, authorize(4), availableItemsOverview);
+
 
 module.exports = router;

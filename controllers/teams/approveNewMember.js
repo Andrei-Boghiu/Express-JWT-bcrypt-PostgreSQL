@@ -12,9 +12,9 @@ module.exports = approveNewMember = async (req, res) => {
             console.log({ approverId, teamId, newMemberId });
             // ! Check Here if the approval for normal teams works as well as it does for special teams
             const query = `
-        UPDATE user_teams 
-        SET approved = true, approved_by = $1, approved_at = CURRENT_TIMESTAMP
-        WHERE user_id = $2 AND team_id = $3`;
+                UPDATE user_teams 
+                SET approved = true, approved_by = $1, approved_at = CURRENT_TIMESTAMP
+                WHERE user_id = $2 AND team_id = $3`;
 
             await client.query(query, [approverId, newMemberId, teamId]);
 

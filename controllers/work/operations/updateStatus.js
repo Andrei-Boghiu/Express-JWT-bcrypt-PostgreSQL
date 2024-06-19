@@ -14,7 +14,7 @@ module.exports = updateStatus = async (req, res) => {
         const user_id = req.user.id;
         const teamId = req.headers?.team_id;
 
-        console.log("------" + new Date().toISOString() + "------")
+        console.log("------" + new Date().toISOString() + "------");
         console.log("body:", body);
 
         const resolutionCheck = newStatus !== "Unassigned" ? resolution : true;
@@ -35,6 +35,18 @@ module.exports = updateStatus = async (req, res) => {
             updated_by = ${user_id} 
         WHERE team_id = ${teamId} AND aux_id = '${aux_id}'`;
 
+        const resolveQuery = `
+        UPDATE work_items 
+            SET 
+            status = '${newStatus}', 
+            resolution = '${resolution}',
+            ${annotation ? `annotation = '${annotation}',` : ''}
+            ${followUp ? `follow_up_date = '${followUp}',` : ''}
+            assignee_id = null,
+            last_resolved_at = CURRENT_TIMESTAMP,
+            updated_by = ${user_id} 
+        WHERE team_id = ${teamId} AND aux_id = '${aux_id}'`;
+
         const releaseItemQuery = `
             UPDATE work_items 
             SET 
@@ -48,6 +60,10 @@ module.exports = updateStatus = async (req, res) => {
         if (newStatus === "Unassigned") {
             console.log(releaseItemQuery)
             await pool.query(releaseItemQuery);
+            console.log("Query executed successfully");
+        } else if (newStatus === "Resolved") {
+            console.log(resolveQuery)
+            await pool.query(resolveQuery);
             console.log("Query executed successfully");
         } else {
             console.log(updateQuery)

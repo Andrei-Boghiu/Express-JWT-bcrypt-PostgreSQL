@@ -11,7 +11,7 @@ module.exports = addUpdateWorkItems = async (req, res) => {
 
         console.log("approverId:", updated_by_id);
         console.log("teamId:", teamId);
-        console.log("workItems:", workItems);
+        // console.log("workItems:", workItems);
 
         if (workItems?.length === 0 || !updated_by_id || !teamId) {
             res.status(400).json({ message: 'Invalid request' });
@@ -33,26 +33,60 @@ module.exports = addUpdateWorkItems = async (req, res) => {
             const failedItems = [];
 
             for (const item of workItems) {
-                const { aux_id, ...rest } = item;
-                const setClause = Object.entries(rest)
-                    .map(([key, value]) => `${key} = '${value}'`)
-                    .join(', ');
 
-                const updateQuery = `UPDATE work_items SET ${setClause}, updated_by = ${updated_by_id} WHERE team_id = ${teamId} AND aux_id = '${aux_id}'`;
-                const updateResult = await client.query(updateQuery);
+                // Sanitize the data to remove empty values
+                const sanitizedItem = {};
+                const keys = Object.keys(item);
+                for (const key of keys) {
+                    const value = item[key];
+                    if (value) {
+                        sanitizedItem[key] = value;
+                    }
+                }
 
-                if (updateResult.rowCount === 0) {
-                    const columns = Object.keys(rest).join(', ');
-                    const values = Object.values(rest);
-                    values.push(teamId, updated_by_id);
+                const { aux_id, ...rest } = sanitizedItem;
+                const { rows: alreadyInDb } = await client.query(`SELECT status FROM work_items WHERE aux_id = $1 AND team_id = $2`, [aux_id, teamId]);
 
-                    const wildcards = values.map((_, index) => `$${index + 1}`).join(', ');
-                    const insertQuery = `INSERT INTO work_items (${columns}, team_id, created_by) VALUES (${wildcards})`;
-
+                if (alreadyInDb.length) {
                     try {
+                        if (alreadyInDb[0].status === 'Work in Progress') {
+                            const errData = { ...item, error: `Item ${aux_id} has been found in 'Work in Progress' status and refused to update due to safety measures.` }
+                            failedItems.push(errData);
+                            console.log('The status is:', alreadyInDb[0].status);
+                            continue;
+                        }
+
+                        const columns = Object.keys(rest);
+
+                        let setClause = ''
+                        for (let [index, column] of columns.entries()) {
+                            setClause = setClause + `${column} = $${index + 4}, `
+                        }
+
+                        const updateQuery = `UPDATE work_items SET ${setClause} updated_by = $1 WHERE team_id = $2 AND aux_id = $3`;
+                        const restValues = Object.values(rest);
+                        const values = [updated_by_id, teamId, aux_id, ...restValues];
+
+                        await client.query(updateQuery, values);
+
+                    } catch (error) {
+                        console.log("Error updating existing item ->", error);
+                        const errData = { ...item, error: error.message };
+                        failedItems.push(errData);
+                    }
+                } else {
+                    try {
+                        const columns = Object.keys(sanitizedItem).join(', ');
+                        const values = Object.values(sanitizedItem);
+                        values.push(teamId, updated_by_id);
+
+                        const wildcards = values.map((_, index) => `$${index + 1}`).join(', ');
+                        const insertQuery = `INSERT INTO work_items (${columns}, team_id, created_by) VALUES (${wildcards})`;
+
                         await client.query(insertQuery, values);
                     } catch (error) {
-                        const errData = { ...rest, error: error.message };
+                        console.log("Error uploading new item ->", error)
+                        const errData = { ...item, error: error.message };
                         failedItems.push(errData);
                     }
                 }
@@ -64,6 +98,7 @@ module.exports = addUpdateWorkItems = async (req, res) => {
                 res.status(201).json({ message: 'Work items successfully updated.' });
             }
         } catch (error) {
+            console.log('in global 2x catch')
             console.log(error);
             res.status(500).json({ message: 'Failed to update work items.', error });
         } finally {
