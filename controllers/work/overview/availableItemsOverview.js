@@ -12,6 +12,7 @@ module.exports = availableItemsOverview = async (req, res) => {
 
         const ingestedAge = calculateColumnAge('wi.ingested_at', 'Ingested');
         const assignedAge = calculateColumnAge('wi.last_assigned_at', 'Assigned');
+        const dueDateAge = calculateColumnAge('wi.due_date', 'Due Date');
 
         const query = `
             select
@@ -22,7 +23,8 @@ module.exports = availableItemsOverview = async (req, res) => {
                 wi.status,
                 u.username,
                 ${ingestedAge},
-                ${assignedAge}
+                ${assignedAge},
+                ${dueDateAge}
             from
                 work_items as wi
                 left join users as u on u.id = wi.assignee_id

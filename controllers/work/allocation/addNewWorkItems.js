@@ -3,8 +3,6 @@ const { forbiddenHeaders, uploadRequiredHeaders } = require("../config");
 
 module.exports = addNewWorkItems = async (req, res) => {
     try {
-        console.log(`addNewWorkItems:`);
-
         const workItems = req.body;
         const creator_id = req.user.id;
         const teamId = req.headers?.team_id;

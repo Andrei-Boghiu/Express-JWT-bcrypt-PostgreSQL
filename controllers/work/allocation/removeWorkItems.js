@@ -33,7 +33,7 @@ module.exports = removeWorkItems = async (req, res) => {
 
             if (failedItems.length === 0) {
                 await client.query('COMMIT');
-                return res.status(200).json({ message: 'Work items successfully removed.' });
+                return res.status(200).json({ message: `Work item${workItems?.length === 1 ? '' : 's'} removed successfully.` });
             } else {
                 await client.query('ROLLBACK');
                 return res.status(206).json({ message: 'Some work items failed to remove.', failedItems });

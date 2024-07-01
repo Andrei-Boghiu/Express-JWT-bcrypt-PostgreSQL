@@ -3,19 +3,12 @@ const { forbiddenHeaders, updateSomeHeaders } = require("../config");
 
 module.exports = updateWorkItems = async (req, res) => {
     try {
-        console.log(`updateWorkItems:`);
-
         const workItems = req.body;
         const updated_by_id = req.user.id;
         const teamId = req.headers?.team_id;
 
-        console.log("approverId:", updated_by_id);
-        console.log("teamId:", teamId);
-        console.log("workItems:", workItems);
-
         if (workItems?.length === 0 || !updated_by_id || !teamId) {
-            res.status(400).json({ message: 'Invalid request' });
-            return
+            return res.status(400).json({ message: 'Invalid request' });
         }
 
         const headers = Object.keys(workItems[0]);
@@ -24,8 +17,7 @@ module.exports = updateWorkItems = async (req, res) => {
         const hasSomeUpdateHeaders = updateSomeHeaders.some(item => headers.includes(item));
 
         if (hasForbiddenHeaders || !hasRequiredHeaders || !hasSomeUpdateHeaders) {
-            res.status(400).json({ message: 'Invalid data headers' });
-            return
+            return res.status(400).json({ message: 'Invalid data headers' });
         }
 
         const client = await pool.connect();
@@ -62,9 +54,9 @@ module.exports = updateWorkItems = async (req, res) => {
             }
 
             if (failedItems.length > 0) {
-                res.status(206).json({ message: 'Some work items failed to update.', failedItems });
+                return res.status(206).json({ message: 'Some work items failed to update.', failedItems });
             } else {
-                res.status(201).json({ message: 'Work items successfully updated.' });
+                return res.status(201).json({ message: 'Work items successfully updated.' });
             }
         } catch (error) {
             console.log(error);
@@ -72,6 +64,7 @@ module.exports = updateWorkItems = async (req, res) => {
         } finally {
             client.release();
         }
+        return;
     } catch (error) {
         console.log(error);
         res.status(500).json({ message: 'Failed to update work items.' });

@@ -13,7 +13,7 @@ module.exports = requestCreateNewTeam = async (req, res) => {
 
         await pool.query(query, [teamName, teamDescription, createdBy]);
 
-        res.json({ message: 'Request to create a new team submitted successfully. An admin will have to approve it!' });
+        return res.json({ message: 'Request to create a new team submitted successfully. An admin will have to approve it!' });
     } catch (error) {
         console.error('Error fetching approved teams:', error);
         res.status(500).json({

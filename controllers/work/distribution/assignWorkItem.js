@@ -2,7 +2,6 @@ const pool = require('../../../config/db');
 
 module.exports = assignWorkItem = async (req, res) => {
     try {
-        console.log("assignWorkItem")
         const userId = req.user.id;
         const teamId = req.headers?.team_id;
 

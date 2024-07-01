@@ -1,10 +1,8 @@
-// transferWorkItem
 const { userStatusChange } = require("../config")
 const pool = require('../../../config/db');
 
 module.exports = updateStatus = async (req, res) => {
     try {
-        const body = req.body;
         const aux_id = req.body?.aux_id;
         const newStatus = req.body?.status;
         const resolution = req.body?.resolution;
@@ -13,9 +11,6 @@ module.exports = updateStatus = async (req, res) => {
 
         const user_id = req.user.id;
         const teamId = req.headers?.team_id;
-
-        console.log("------" + new Date().toISOString() + "------");
-        console.log("body:", body);
 
         const resolutionCheck = newStatus !== "Unassigned" ? resolution : true;
         const validStatus = userStatusChange.includes(newStatus);
@@ -27,25 +22,27 @@ module.exports = updateStatus = async (req, res) => {
         const updateQuery = `
         UPDATE work_items 
             SET 
-            status = '${newStatus}', 
-            resolution = '${resolution}',
+            status = $1, 
+            resolution = $2,
             ${annotation ? `annotation = '${annotation}',` : ''}
             ${followUp ? `follow_up_date = '${followUp}',` : ''}
             last_resolved_at = CURRENT_TIMESTAMP,
-            updated_by = ${user_id} 
-        WHERE team_id = ${teamId} AND aux_id = '${aux_id}'`;
+            updated_by = $3
+        WHERE team_id = $4 AND aux_id = $5`;
+        const updateData = [newStatus, resolution, user_id, teamId, aux_id];
 
         const resolveQuery = `
         UPDATE work_items 
             SET 
-            status = '${newStatus}', 
-            resolution = '${resolution}',
+            status = $1, 
+            resolution = $2,
             ${annotation ? `annotation = '${annotation}',` : ''}
             ${followUp ? `follow_up_date = '${followUp}',` : ''}
             assignee_id = null,
             last_resolved_at = CURRENT_TIMESTAMP,
-            updated_by = ${user_id} 
-        WHERE team_id = ${teamId} AND aux_id = '${aux_id}'`;
+            updated_by = $3
+        WHERE team_id = $4 AND aux_id = $5`;
+        const resolveData = [newStatus, resolution, user_id, teamId, aux_id];
 
         const releaseItemQuery = `
             UPDATE work_items 
@@ -54,21 +51,16 @@ module.exports = updateStatus = async (req, res) => {
             assignee_id = null,
             annotation = 'Release reason: ${annotation}', 
             last_resolved_at = CURRENT_TIMESTAMP,
-            updated_by = ${user_id} 
-        WHERE team_id = ${teamId} AND aux_id = '${aux_id}'`;
+            updated_by = $1 
+        WHERE team_id = $2 AND aux_id = $3`;
+        const releaseData = [user_id, teamId, aux_id];
 
         if (newStatus === "Unassigned") {
-            console.log(releaseItemQuery)
-            await pool.query(releaseItemQuery);
-            console.log("Query executed successfully");
+            await pool.query(releaseItemQuery, releaseData);
         } else if (newStatus === "Resolved") {
-            console.log(resolveQuery)
-            await pool.query(resolveQuery);
-            console.log("Query executed successfully");
+            await pool.query(resolveQuery, resolveData);
         } else {
-            console.log(updateQuery)
-            await pool.query(updateQuery);
-            console.log("Query executed successfully");
+            await pool.query(updateQuery, updateData);
         }
 
         res.status(200).json({ message: 'Success' });

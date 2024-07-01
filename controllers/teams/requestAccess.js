@@ -3,7 +3,7 @@ const pool = require('../../config/db');
 module.exports = requestAccess = async (req, res) => {
     try {
         const userId = req.user.id;
-        const teamId = req.body.teamId
+        const teamId = req.body.teamId;
 
         let roleId;
         switch (Number(teamId)) {

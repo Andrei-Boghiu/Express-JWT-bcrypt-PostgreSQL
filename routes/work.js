@@ -10,7 +10,7 @@ const addNewWorkItems = require('../controllers/work/allocation/addNewWorkItems'
 const updateWorkItems = require('../controllers/work/allocation/updateWorkItems');
 const addUpdateWorkItems = require('../controllers/work/allocation/addUpdateWorkItems');
 const removeWorkItems = require('../controllers/work/allocation/removeWorkItems');
-const addAdhocTask = require('../controllers/work/allocation/addAdhocTask');
+const truncateInflow = require('../controllers/work/allocation/truncateInflow');
 
 const lobby = require('../controllers/work/distribution/userLobby');
 const assignWorkItem = require('../controllers/work/distribution/assignWorkItem');
@@ -25,7 +25,7 @@ router.post('/allocation/add-new-items', verifyToken, authorize(4), addNewWorkIt
 router.post('/allocation/update-items', verifyToken, authorize(4), updateWorkItems);
 router.post('/allocation/add-update-items', verifyToken, authorize(4), addUpdateWorkItems);
 router.post('/allocation/remove-items', verifyToken, authorize(4), removeWorkItems);
-router.post('/allocation/add-adhoc-task', verifyToken, authorize(4), addAdhocTask);
+router.get('/allocation/truncate-inflow', verifyToken, authorize(4), truncateInflow);
 
 // DISTRIBUTION ROUTES
 router.get('/distribution/user-lobby', verifyToken, authorize(5), lobby);
